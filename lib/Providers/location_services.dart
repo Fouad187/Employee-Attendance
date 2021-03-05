@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationServices extends ChangeNotifier {
-  
   Location location = Location(
     locationName: 'Office 1',
     radius: 5.0,
