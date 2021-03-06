@@ -24,22 +24,24 @@ class LocationServices extends ChangeNotifier {
     Get Location Function get user location by Geolocator package and pass the location to
     calculate distance between the location and office
    */
-  GetLocation() async
+  getLocation() async
   {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((value) {
           currentPosition=value;
-          GetDistance(startLatitude: value.latitude, startLongitude: value.longitude);
+          getDistance(startLatitude: value.latitude, startLongitude: value.longitude);
         }
-    );
+    ).onError((error, stackTrace) {
+      Fluttertoast.showToast(msg: 'can\'t get current location now' , toastLength: Toast.LENGTH_LONG);
+    });
   }
 
   // get distance in meter between two location and pass value to check if in range or not
 
-  GetDistance({double startLatitude, double startLongitude }) {
+  getDistance({double startLatitude, double startLongitude }) {
     double distanceInMeters = Geolocator.distanceBetween(
         startLatitude, startLongitude, location.latitude, location.longitude).floorToDouble();
-    CheckinRange(distanceInMeters);
+    checkInRange(distanceInMeters);
   }
 
   /*
@@ -47,7 +49,7 @@ class LocationServices extends ChangeNotifier {
    fill the attendance object with information needed and if else
    show message to user
    */
-  CheckinRange(double distance) {
+  checkInRange(double distance) {
 
     if (distance <= location.radius)
       {
@@ -76,7 +78,7 @@ class LocationServices extends ChangeNotifier {
     in this function i check if user attended ? make checkout and update his attendance object
     and if else show message to user tell him he did'nt check in first
    */
-  CheckOut() {
+  checkOut() {
     inRange=false;
     if(attendance !=null)
       {
