@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationServices extends ChangeNotifier {
+
+  //Set Location
   Location location = Location(
     locationName: 'Office 1',
     radius: 5.0,
@@ -13,12 +15,15 @@ class LocationServices extends ChangeNotifier {
     latitude: 30.3138392,
   );
 
-  double distanceInMeters = 0.0;
-  bool inRange=false;
-  bool isAttend=false;
-  Attendance attendance;
+  bool inRange=false;   // to detect if user in range
+  bool isAttend=false;  // to detect if user attended before or not
+  Attendance attendance; // Object of attendance
   var currentPosition;
 
+  /*
+    Get Location Function get user location by Geolocator package and pass the location to
+    calculate distance between the location and office
+   */
   GetLocation() async
   {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
@@ -27,20 +32,21 @@ class LocationServices extends ChangeNotifier {
           GetDistance(startLatitude: value.latitude, startLongitude: value.longitude);
         }
     );
-
-    /*
-    await Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best).listen((event) {
-         currentPosition=value;
-     GetDistance(startLatitude: event.latitude , startLongitude: event.longitude);
-   });
-    */
   }
 
+  // get distance in meter between two location and pass value to check if in range or not
+
   GetDistance({double startLatitude, double startLongitude }) {
-    distanceInMeters = Geolocator.distanceBetween(
+    double distanceInMeters = Geolocator.distanceBetween(
         startLatitude, startLongitude, location.latitude, location.longitude).floorToDouble();
     CheckinRange(distanceInMeters);
   }
+
+  /*
+   Check if user in range which set by the manager and if in range
+   fill the attendance object with information needed and if else
+   show message to user
+   */
   CheckinRange(double distance) {
 
     if (distance <= location.radius)
@@ -65,6 +71,11 @@ class LocationServices extends ChangeNotifier {
         notifyListeners();
       }
   }
+
+  /*
+    in this function i check if user attended ? make checkout and update his attendance object
+    and if else show message to user tell him he did'nt check in first
+   */
   CheckOut() {
     inRange=false;
     if(attendance !=null)

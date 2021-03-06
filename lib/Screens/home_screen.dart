@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     child: Text('Check out' , style: TextStyle(color: Colors.white),),
                     color: Colors.blue,
-                    onPressed: (){
+                    onPressed: () {
                       instance.CheckOut();
                     },
                   )
